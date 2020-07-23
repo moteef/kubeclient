@@ -8,6 +8,8 @@ class TestEndpoint < MiniTest::Test
   def test_create_endpoint
     stub_core_api_list
     testing_ep = Kubeclient::Resource.new
+    testing_ep.kind = 'Endpoints'
+    testing_ep.apiVersion = 'v1'
     testing_ep.metadata = {}
     testing_ep.metadata.name = 'myendpoint'
     testing_ep.metadata.namespace = 'default'
@@ -18,9 +20,9 @@ class TestEndpoint < MiniTest::Test
       }
     ]
 
-    req_body = '{"metadata":{"name":"myendpoint","namespace":"default"},' \
+    req_body = '{"kind":"Endpoints","apiVersion":"v1","metadata":{"name":"myendpoint","namespace":"default"},' \
       '"subsets":[{"addresses":[{"ip":"172.17.0.25"}],"ports":[{"name":"https",' \
-      '"port":6443,"protocol":"TCP"}]}],"kind":"Endpoints","apiVersion":"v1"}'
+      '"port":6443,"protocol":"TCP"}]}]}'
 
     stub_request(:post, 'http://localhost:8080/api/v1/namespaces/default/endpoints')
       .with(body: req_body)

@@ -233,7 +233,7 @@ module Kubeclient
         end
 
         define_singleton_method("create_#{entity.method_names[0]}") do |entity_config|
-          create_entity(entity.entity_type, entity.resource_name, entity_config)
+          create_entity(entity.resource_name, entity_config)
         end
 
         define_singleton_method("update_#{entity.method_names[0]}") do |entity_config|
@@ -378,18 +378,11 @@ module Kubeclient
       format_response(@as, response.body)
     end
 
-    def create_entity(entity_type, resource_name, entity_config)
+    def create_entity(resource_name, entity_config)
       # Duplicate the entity_config to a hash so that when we assign
       # kind and apiVersion, this does not mutate original entity_config obj.
       hash = entity_config.to_hash
-
       ns_prefix = build_namespace_prefix(hash[:metadata][:namespace])
-
-      # TODO: temporary solution to add "kind" and apiVersion to request
-      # until this issue is solved
-      # https://github.com/GoogleCloudPlatform/kubernetes/issues/6439
-      hash[:kind] = entity_type
-      hash[:apiVersion] = @api_group + @api_version
       response = handle_exception do
         rest_client[ns_prefix + resource_name]
           .post(hash.to_json, { 'Content-Type' => 'application/json' }.merge(@headers))

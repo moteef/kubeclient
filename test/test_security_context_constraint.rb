@@ -12,6 +12,8 @@ class TestSecurityContextConstraints < MiniTest::Test
     )
 
     testing_scc = Kubeclient::Resource.new(
+      kind: 'SecurityContextConstraints',
+      apiVersion: 'security.openshift.io/v1',
       metadata: {
         name: 'teleportation'
       },
@@ -22,9 +24,9 @@ class TestSecurityContextConstraints < MiniTest::Test
         type: 'MustRunAs'
       }
     )
-    req_body = '{"metadata":{"name":"teleportation"},"runAsUser":{"type":"MustRunAs"},' \
-      '"seLinuxContext":{"type":"MustRunAs"},' \
-      '"kind":"SecurityContextConstraints","apiVersion":"security.openshift.io/v1"}'
+    req_body = '{"kind":"SecurityContextConstraints","apiVersion":"security.openshift.io/v1",' \
+      '"metadata":{"name":"teleportation"},"runAsUser":{"type":"MustRunAs"},' \
+      '"seLinuxContext":{"type":"MustRunAs"}}'
 
     stub_request(:post, 'http://localhost:8080/apis/security.openshift.io/v1/securitycontextconstraints')
       .with(body: req_body)

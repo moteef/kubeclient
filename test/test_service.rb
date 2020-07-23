@@ -4,6 +4,8 @@ require_relative 'test_helper'
 class TestService < MiniTest::Test
   def test_construct_our_own_service
     our_service = Kubeclient::Resource.new
+    our_service.kind = 'Service'
+    our_service.apiVersion = 'v1'
     our_service.metadata = {}
     our_service.metadata.name = 'guestbook'
     our_service.metadata.namespace = 'staging'
@@ -36,9 +38,6 @@ class TestService < MiniTest::Test
     assert_equal(created.metadata.name, our_service.metadata.name)
     assert_equal(created.spec.ports.size, our_service.spec.ports.size)
 
-    # Check that original entity_config is not modified by kind/apiVersion patches:
-    assert_nil(our_service.kind)
-
     assert_requested(:post, expected_url, times: 1) do |req|
       data = JSON.parse(req.body)
       data['kind'] == 'Service' &&
@@ -50,6 +49,8 @@ class TestService < MiniTest::Test
 
   def test_construct_service_from_symbol_keys
     service = Kubeclient::Resource.new
+    service.kind = 'Service'
+    service.apiVersion = 'v1'
     service.metadata = {
       labels: { tier: 'frontend' },
       name: 'test-service',
@@ -83,6 +84,8 @@ class TestService < MiniTest::Test
 
   def test_construct_service_from_string_keys
     service = Kubeclient::Resource.new
+    service.kind = 'Service'
+    service.apiVersion = 'v1'
     service.metadata = {
       'labels' => { 'tier' => 'frontend' },
       'name' => 'test-service',

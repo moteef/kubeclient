@@ -22,11 +22,12 @@ module Kubeclient
     def initialize(
       uri,
       version = 'v1',
+      path = '/api',
       **options
     )
       initialize_client(
         uri,
-        '/api',
+        path,
         version,
         **options
       )
